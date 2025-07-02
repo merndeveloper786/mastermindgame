@@ -73,3 +73,26 @@ function changePinColor(pinNum, colorInd, id) {
 }
 
 setAnswer();
+
+function colorClicked(id) {
+  switch (id) {
+    case "red":
+      guess.push(0);
+      break;
+    case "blue":
+      guess.push(1);
+      break;
+    case "green":
+      guess.push(2);
+      break;
+    case "yellow":
+      guess.push(3);
+      break;
+    case "purple":
+      guess.push(4);
+      break;
+    case "orange":
+      guess.push(5);
+      break;
+  }
+}
