@@ -96,3 +96,32 @@ function colorClicked(id) {
       break;
   }
 }
+
+// check if guess length is correct
+function checkGuessLength() {
+  if (guess.length == answer.length) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+//  changes guess pins back to black
+function changeBackToBlack() {
+  for (let x = 1; x < 5; x++) {
+    let pin = $(`#guess div:nth-child(${x})`);
+    pin.css("background-color", "rgb(207, 187, 165)");
+  }
+}
+
+// function to delete last item
+function removeLastGuess() {
+  guess.pop();
+  let x = guess.length;
+  let id = $(`#${x + 1}`);
+  id.css("background-color", "rgb(207, 187, 165)");
+}
+
+$("#clear").click(function () {
+  removeLastGuess();
+});
