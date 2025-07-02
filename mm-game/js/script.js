@@ -125,3 +125,40 @@ function removeLastGuess() {
 $("#clear").click(function () {
   removeLastGuess();
 });
+
+function check() {
+  if (checkGuessLength() == true) {
+    if (round < 11) {
+      getGuessResults();
+      changeRoundPins();
+      changeBackToBlack();
+      if (win == true) {
+        $("#check").off("click");
+        answer.forEach((el, i) => {
+          changePinColor(i + 1, el, "#answer");
+        });
+        for (let i = 1; i < 5; i++) {
+          let ans = $(`#answer div:nth-child(${i})`);
+          ans.text("");
+        }
+      } else if (win == false && round == 10) {
+        answer.forEach((el, i) => {
+          changePinColor(i + 1, el, "#answer");
+        });
+        for (let i = 1; i < 5; i++) {
+          let ans = $(`#answer div:nth-child(${i})`);
+          ans.text("");
+        }
+      } else {
+        round++;
+      }
+    }
+  } else {
+    feedback.text("CHOOSE MORE PINS DUMBASS");
+  }
+}
+
+// check button on click
+$("#check").click(function () {
+  check();
+});
