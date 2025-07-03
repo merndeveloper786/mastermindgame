@@ -162,3 +162,42 @@ function check() {
 $("#check").click(function () {
   check();
 });
+
+function getGuessResults() {
+  // creates new arrays from answer and guess
+  let ans = Array.from(answer);
+  let gs = Array.from(guess);
+
+  // check for black pins
+  gs.forEach((el, i) => {
+    if (el == ans[i]) {
+      indexOfCorrect.push(i);
+      results.push("black");
+    }
+  });
+
+  // remove correct answers from arrays
+  let removeItems = indexOfCorrect.reverse();
+
+  removeItems.forEach((el) => {
+    ans.splice(el, 1);
+    gs.splice(el, 1);
+  });
+
+  // sort guess arr without black answers so we start with biggest number
+  gs.sort();
+  ans.sort();
+
+  // for each element of gs, if ans includes ele, push white to results, else increase wrong count;
+  gs.forEach((el, i) => {
+    if (ans.includes(el)) {
+      results.push("white");
+      let indOfEl = ans.indexOf(el);
+      ans.splice(indOfEl, 1);
+    }
+  });
+
+  changeResultPins();
+  results = [];
+  indexOfCorrect = [];
+}
