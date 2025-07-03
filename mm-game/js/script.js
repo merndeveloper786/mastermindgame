@@ -201,3 +201,158 @@ function getGuessResults() {
   results = [];
   indexOfCorrect = [];
 }
+function changeResultPins() {
+  results.forEach((el, i) => {
+    let pin = $(`#ans${round} div:nth-child(${i + 1})`);
+    pin.css("background-color", el);
+  });
+}
+
+$("#reset").click(function () {
+  answer = [];
+  guess = [];
+  indexOfCorrect = [];
+  black = 0;
+  white = 0;
+  round = 1;
+  results = [];
+  feedback.text("New game loaded");
+  win = undefined;
+  selectedGuessPin = undefined;
+  col_id = undefined;
+  setAnswer();
+  changeAllToBlack();
+  $("#check").click(function () {
+    check();
+  });
+});
+
+function changeAllToBlack() {
+  for (let i = 1; i < 11; i++) {
+    for (let x = 1; x < 5; x++) {
+      let pin = $(`#guess${i} div:nth-child(${x})`);
+      pin.css("background-color", "rgb(207, 187, 165)");
+    }
+  }
+  for (let i = 1; i < 11; i++) {
+    for (let x = 1; x < 5; x++) {
+      let pin = $(`#ans${i} div:nth-child(${x})`);
+      pin.css("background-color", "rgb(238, 207, 172)");
+    }
+  }
+  for (let i = 1; i < 5; i++) {
+    let pin = $(`#guess div:nth-child(${i})`);
+    pin.css("background-color", "rgb(207, 187, 165)");
+
+    let ans = $(`#answer div:nth-child(${i})`);
+    ans.css("background-color", "rgb(207, 187, 165)");
+    ans.text("?");
+  }
+}
+
+// // to store selected guess pin on click
+$("body").click(function (event) {
+  selectedGuessPin = event.target.id;
+});
+
+$(".selector_pin").click(function (event) {
+  let pin = selectedGuessPin;
+  let clickedId = this.id;
+  let pushToGuess = indexOfClickedColor(clickedId);
+
+  if (
+    selectedGuessPin == "1" ||
+    selectedGuessPin == "2" ||
+    selectedGuessPin == "3" ||
+    selectedGuessPin == "4"
+  ) {
+    // need to get id of clicked color
+    $(`#${col_id}`).css("background-color");
+    changePinColor(pin, col_id, "#guess");
+    updateGuess(pushToGuess);
+  }
+  // ADD ANOTHER ELSE IF TO CHECK FOR BLANKS
+  else {
+    if (guess.length == 0) {
+      colorClicked(clickedId);
+      let pinNum = guess.length;
+      let color = guess[guess.length - 1];
+      changePinColor(pinNum, color, "#guess");
+    } else {
+      findEmptyPin();
+      updateGuess(pushToGuess);
+      changePinColor(emptyPin, col_id, "#guess");
+    }
+  }
+  if (guess.length == 4) {
+    return (emptyPin = null);
+  }
+});
+
+function findEmptyPin() {
+  for (let i = 3; i > -1; i--) {
+    if (guess[i] == null) {
+      emptyPin = i + 1;
+    }
+  }
+  return emptyPin;
+}
+
+function indexOfClickedColor(clickedId) {
+  switch (clickedId) {
+    case "red":
+      return (col_id = 0);
+    case "blue":
+      return (col_id = 1);
+    case "green":
+      return (col_id = 2);
+    case "yellow":
+      return (col_id = 3);
+    case "purple":
+      return (col_id = 4);
+    case "orange":
+      return (col_id = 5);
+  }
+}
+
+// UPDATE ARRAY
+function updateGuess(x) {
+  if (
+    selectedGuessPin == "1" ||
+    selectedGuessPin == "2" ||
+    selectedGuessPin == "3" ||
+    selectedGuessPin == "4"
+  ) {
+    let index = selectedGuessPin - 1;
+    if (guess.length == 0) {
+      if (selectedGuessPin == 4) {
+        guess.push(null, null, null, x);
+      } else if (selectedGuessPin == 3) {
+        guess.push(null, null, x, null);
+      } else if (selectedGuessPin == 2) {
+        guess.push(null, x, null, null);
+      } else {
+        guess.push(x);
+      }
+    } else if (guess.length == 1) {
+      if (selectedGuessPin == 2) {
+        guess.push(x);
+      } else if (selectedGuessPin == 3) {
+        guess.push(null, x);
+      } else if (selectedGuessPin == 4) {
+        guess.push(null, null, x);
+      }
+    } else if (guess.length == 2) {
+      if (selectedGuessPin == 3) {
+        guess.push(x);
+      } else if (selectedGuessPin == 4) {
+        guess.push(null, x);
+      }
+    } else {
+      guess.splice(index, 1, x);
+    }
+  } else {
+    let index = emptyPin - 1;
+    guess.splice(index, 1, x);
+  }
+}
