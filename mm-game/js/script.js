@@ -97,6 +97,18 @@ function colorClicked(id) {
   }
 }
 
+function changeRoundPins() {
+  guess.forEach((el, i) => {
+    let id = "#guess" + round;
+    let pinBgCheck = $("#b" + round);
+    if (pinBgCheck.css("background-color") == "rgb(207, 187, 165)") {
+      guess.forEach((el, i) => {
+        changePinColor(i + 1, el, id);
+      });
+    }
+  });
+}
+
 // check if guess length is correct
 function checkGuessLength() {
   if (guess.length == answer.length) {
