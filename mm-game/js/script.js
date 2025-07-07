@@ -126,13 +126,63 @@ $("#clear").click(function () {
   removeLastGuess();
 });
 
+function checkWin() {
+  let win = true;
+  answer.forEach((el, i) => {
+    if (el !== guess[i]) {
+      win = false;
+    }
+  });
+  return win;
+}
+
+// Show result modal
+function showResultModal(isWin) {
+  const modal = document.getElementById("resultModal");
+  const header = document.getElementById("resultHeader");
+  const levelText = document.getElementById("levelText");
+  const scoreText = document.getElementById("scoreText");
+  const starContainer = document.getElementById("starContainer");
+
+  header.textContent = isWin ? "Victory" : "Game Over";
+  header.style.background = isWin
+    ? "linear-gradient(90deg, #ffa600, #ff5e00)"
+    : "linear-gradient(90deg, #a0a0a0, #555)";
+
+  levelText.textContent = "3";
+
+  // Score Logic (100 - 10 per turn)
+  let score = 0;
+  if (isWin) {
+    score = Math.max(100 - (round - 1) * 10, 10);
+  }
+  scoreText.textContent = score.toFixed(3);
+
+  // Star Rating Logic
+  let stars = 0;
+  if (isWin) {
+    if (round <= 3) stars = 3;
+    else if (round <= 6) stars = 2;
+    else if (round <= 10) stars = 1;
+  }
+
+  // Set emoji stars
+  starContainer.textContent = "★".repeat(stars);
+
+  modal.classList.remove("hidden");
+}
+
 function check() {
   if (checkGuessLength() == true) {
     if (round < 11) {
       getGuessResults();
       changeRoundPins();
       changeBackToBlack();
-      if (win == true) {
+
+      let win = checkWin(); // ✅ Get the result without showing modal
+
+      if (win) {
+        showResultModal(true); // ✅ Show Victory modal immediately
         $("#check").off("click");
         answer.forEach((el, i) => {
           changePinColor(i + 1, el, "#answer");
@@ -141,23 +191,27 @@ function check() {
           let ans = $(`#answer div:nth-child(${i})`);
           ans.text("");
         }
-      } else if (win == false && round == 10) {
-        answer.forEach((el, i) => {
-          changePinColor(i + 1, el, "#answer");
-        });
-        for (let i = 1; i < 5; i++) {
-          let ans = $(`#answer div:nth-child(${i})`);
-          ans.text("");
-        }
       } else {
-        round++;
+        if (round == 10) {
+          showResultModal(false); // ✅ Show Game Over modal only at round 10
+          answer.forEach((el, i) => {
+            changePinColor(i + 1, el, "#answer");
+          });
+          for (let i = 1; i < 5; i++) {
+            let ans = $(`#answer div:nth-child(${i})`);
+            ans.text("");
+          }
+        } else {
+          // feedback.text("Try Again");
+          guess = [];
+          round++; // ✅ Increase round only if not final
+        }
       }
     }
   } else {
     feedback.text("CHOOSE MORE PINS DUMBASS");
   }
 }
-
 // check button on click
 $("#check").click(function () {
   check();
